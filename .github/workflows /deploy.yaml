@@ -1,0 +1,30 @@
+name: deploy
+
+on: 
+  push
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Creaete Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/ecs.pem
+          chmod 600 ~/.ssh/ecs.pem
+      - name: Transfer Nginx Config File
+        run: scp -i ~/.ssh/ecs.pem ./default.conf ecs-user@120.24.161.118:~/default.conf
+
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 120.24.161.118
+          username: ecs-user
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: whoami
+
+
