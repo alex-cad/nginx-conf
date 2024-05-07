@@ -41,5 +41,5 @@ jobs:
               docker load -i ~/${{ env.IMAGE_NAME }}.tar
               docker stop ${{ env.CONTAINER_NAME }}
               docker rm ${{ env.CONTAINER_NAME }}
-              docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.IMAGE_NAME }}:latest
+              docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 --network=dev-bridge-network ${{ env.IMAGE_NAME }}:latest
               docker image prune -f
