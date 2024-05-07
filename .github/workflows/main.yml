@@ -32,4 +32,4 @@ jobs:
           port: 22
           script: |
             docker cp ./default.conf ${{ env.DOCKER_NAME }}:/etc/nginx/conf.d/default.conf
-            docker exec -it ${{ env.DOCKER_NAME }} nginx -s reload
+            docker exec -i ${{ env.DOCKER_NAME }} nginx -s reload
