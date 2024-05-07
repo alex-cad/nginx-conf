@@ -14,14 +14,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Creaete Key
+      
+      - name: Transfer Nginx Config File
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.ALIYUN_ECS_SSH_SECRET }}" > ~/.ssh/ecs.pem
-          chmod 600 ~/.ssh/ecs.pem
-      - name: Transfer Nginx Config File
-        run: scp -i ~/.ssh/ecs.pem ./default.conf ${{ env.USERNAME }}@${{ env.HOST }}:~/default.conf
-
+          echo "${{ secrets.ALIYUN_ECS_SSH_SECRET }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          scp -o StrictHostKeyChecking=no ./default.conf ${{ env.USERNAME }}@${{ env.HOST }}:~/default.conf
+      
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.3
         with:
