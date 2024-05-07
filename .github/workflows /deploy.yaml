@@ -3,6 +3,10 @@ name: deploy
 on: 
   push
 
+env:
+  HOST: 120.24.161.118
+  USERNAME: ecs-user
+
 jobs:
   # Build job
   build:
@@ -13,17 +17,17 @@ jobs:
       - name: Creaete Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/ecs.pem
+          echo "${{ secrets.ALIYUN_ECS_SSH_SECRET }}" > ~/.ssh/ecs.pem
           chmod 600 ~/.ssh/ecs.pem
       - name: Transfer Nginx Config File
-        run: scp -i ~/.ssh/ecs.pem ./default.conf ecs-user@120.24.161.118:~/default.conf
+        run: scp -i ~/.ssh/ecs.pem ./default.conf ${{ env.USERNAME }}@${{ env.HOST }}:~/default.conf
 
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 120.24.161.118
-          username: ecs-user
-          key: ${{ secrets.KEY }}
+          host: ${{ env.HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ secrets.ALIYUN_ECS_SSH_SECRET }}
           port: 22
           script: whoami
 
